@@ -1,8 +1,10 @@
 import { PrismaAdapter } from "@auth/prisma-adapter";
 import { type DefaultSession, type NextAuthConfig } from "next-auth";
 import DiscordProvider from "next-auth/providers/discord";
+import Credentials from "next-auth/providers/credentials"
 
 import { db } from "@/server/db";
+import { identity } from "@trpc/server/unstable-core-do-not-import";
 
 /**
  * Module augmentation for `next-auth` types. Allows us to add custom properties to the `session`
@@ -33,6 +35,17 @@ declare module "next-auth" {
 export const authConfig = {
   providers: [
     DiscordProvider,
+    Credentials({
+      name: "Credentials",
+      credentials: {
+        identifier: { label: "Email", type: "email" },
+        password: { label: "Password", type: "password" },
+      },
+      async authorize(credentials, req) {
+        return null
+      },
+    }), 
+    
     /**
      * ...add more providers here.
      *
