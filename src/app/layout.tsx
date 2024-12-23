@@ -4,6 +4,7 @@ import { GeistSans } from "geist/font/sans";
 import { type Metadata } from "next";
 
 import { TRPCReactProvider } from "@/trpc/react";
+import Topnav from "@/components/Topnav";
 
 export const metadata: Metadata = {
   title: "Create T3 App",
@@ -17,7 +18,12 @@ export default function RootLayout({
   return (
     <html lang="en" className={`${GeistSans.variable}`}>
       <body>
-        <TRPCReactProvider>{children}</TRPCReactProvider>
+        <TRPCReactProvider>
+          <main className={`grid grid-rows-[auto_1fr] min-h-screen m-6 sm:mx-16 xl:mx-56 ${GeistSans.className}`}>
+            <Topnav />
+            {children}
+          </main>
+        </TRPCReactProvider>
       </body>
     </html>
   );
