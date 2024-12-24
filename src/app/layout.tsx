@@ -1,10 +1,13 @@
-import "@/styles/globals.css";
 
+
+import "@/styles/globals.css";
 import { GeistSans } from "geist/font/sans";
 import { type Metadata } from "next";
+import { SessionProvider } from "next-auth/react"
 
 import { TRPCReactProvider } from "@/trpc/react";
 import Topnav from "@/components/Topnav";
+import { ThemeProvider } from "@/components/ThemeProvider";
 
 export const metadata: Metadata = {
   title: "Create T3 App",
@@ -15,16 +18,27 @@ export const metadata: Metadata = {
 export default function RootLayout({
   children,
 }: Readonly<{ children: React.ReactNode }>) {
-  return (
-    <html lang="en" className={`${GeistSans.variable}`}>
-      <body>
-        <TRPCReactProvider>
-          <main className={`grid grid-rows-[auto_1fr] min-h-screen m-6 sm:mx-16 xl:mx-56 ${GeistSans.className}`}>
-            <Topnav />
-            {children}
-          </main>
-        </TRPCReactProvider>
-      </body>
-    </html>
-  );
+    return (
+        <html lang="en" className={`${GeistSans.variable}`} suppressHydrationWarning>
+            <body>
+                <SessionProvider>
+                    <ThemeProvider
+                        attribute="class"
+                        defaultTheme="system"
+                        enableSystem
+                        disableTransitionOnChange
+                    >
+                        <TRPCReactProvider>
+                        <main
+                            className={`m-6 grid min-h-screen grid-rows-[auto_1fr] sm:mx-16 xl:mx-56 ${GeistSans.className}`}
+                        >
+                            <Topnav />
+                            {children}
+                        </main>
+                        </TRPCReactProvider>
+                    </ThemeProvider>
+                </SessionProvider>
+            </body>
+        </html>
+    );
 }

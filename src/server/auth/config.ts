@@ -1,10 +1,9 @@
 import { PrismaAdapter } from "@auth/prisma-adapter";
 import { type DefaultSession, type NextAuthConfig } from "next-auth";
-import DiscordProvider from "next-auth/providers/discord";
-import Credentials from "next-auth/providers/credentials"
+import Discord from "next-auth/providers/discord";
+import type { Provider } from "next-auth/providers"
 
 import { db } from "@/server/db";
-import { identity } from "@trpc/server/unstable-core-do-not-import";
 
 /**
  * Module augmentation for `next-auth` types. Allows us to add custom properties to the `session`
@@ -13,19 +12,24 @@ import { identity } from "@trpc/server/unstable-core-do-not-import";
  * @see https://next-auth.js.org/getting-started/typescript#module-augmentation
  */
 declare module "next-auth" {
-  interface Session extends DefaultSession {
-    user: {
-      id: string;
-      // ...other properties
-      // role: UserRole;
-    } & DefaultSession["user"];
-  }
 
-  // interface User {
-  //   // ...other properties
-  //   // role: UserRole;
-  // }
+
+    interface Session extends DefaultSession {
+        user: {
+            // ...other properties
+            // role: UserRole;
+        } & DefaultSession["user"];
+    }
+
+  interface User {
+    // ...other properties
+    // role: UserRole;
+  }
 }
+
+const providers: Provider[] = [
+  Discord,
+];
 
 /**
  * Options for NextAuth.js used to configure adapters, providers, callbacks, etc.
@@ -33,37 +37,28 @@ declare module "next-auth" {
  * @see https://next-auth.js.org/configuration/options
  */
 export const authConfig = {
-  providers: [
-    DiscordProvider,
-    Credentials({
-      name: "Credentials",
-      credentials: {
-        identifier: { label: "Email", type: "email" },
-        password: { label: "Password", type: "password" },
-      },
-      async authorize(credentials, req) {
-        return null
-      },
-    }), 
-    
-    /**
-     * ...add more providers here.
-     *
-     * Most other providers require a bit more work than the Discord provider. For example, the
-     * GitHub provider requires you to add the `refresh_token_expires_in` field to the Account
-     * model. Refer to the NextAuth.js docs for the provider you want to use. Example:
-     *
-     * @see https://next-auth.js.org/providers/github
-     */
-  ],
+  providers,
   adapter: PrismaAdapter(db),
   callbacks: {
-    session: ({ session, user }) => ({
-      ...session,
-      user: {
-        ...session.user,
-        id: user.id,
-      },
-    }),
+    session: ({ session, user }) => {
+        return {
+        ...session,
+        user: {
+            ...session.user,
+            id: user.id,
+        },
+    }
+    },
   },
 } satisfies NextAuthConfig;
+
+export const providerMap = providers
+  .map((provider) => {
+    if (typeof provider === "function") {
+      const providerData = provider()
+      return { id: providerData.id, name: providerData.name }
+    } else {
+      return { id: provider.id, name: provider.name }
+    }
+  })
+.filter((provider) => provider.id !== "credentials")

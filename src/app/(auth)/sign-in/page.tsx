@@ -1,28 +1,66 @@
 import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
+import {
+  Card,
+  CardContent,
+  CardFooter,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
 import Image from "next/image";
+import { auth, signIn } from "@/server/auth";
+import { providerMap } from "@/server/auth/config";
+import { AuthError } from "next-auth";
+import { redirect } from "next/navigation";
+import { iconLookup } from "@/lib/icon-lookup";
 
-export default function Page() {
+interface SignInFormProps {
+  searchParams: { 
+	callbackUrl: string
+   }
+}
+
+
+export default async function Page(props: SignInFormProps) {
+
+    const { callbackUrl } = await props.searchParams
+
 	return (
 		<div className="flex flex-col items-center justify-center gap-4 p-4">
 			<Card>
 				<CardHeader>
-					<CardTitle className="text-2xl text-center">Sign In</CardTitle>
+					<CardTitle className="text-center text-2xl">Sign In</CardTitle>
 				</CardHeader>
-				<CardContent>
-
-				</CardContent>
+				<CardContent></CardContent>
 				<CardFooter>
-					<Button>
-						<Image 
-							src="https://utfs.io/a/zzhaqm5h82/o5pu0HejsNJB7401ygwHilfsBomY5d9NCQPeaIkO1bZcMDU2" 
-							alt="Discord Logo" 
-							width={18} 
-							height={18}
-							className="text-discord-blue"
-							/>
-						Sign In With Discord
-					</Button>
+					{ 
+                    Object.values(providerMap).map((provider) => (
+						<form
+                            key={provider.id}
+							action={async () => {
+								"use server"
+								try {
+									await signIn(provider.id, {
+										redirectTo: callbackUrl ?? "",
+									})
+									} catch (error) {
+										if (error instanceof AuthError) {
+											return redirect(`/`)
+										}
+										throw error
+									}
+							}}
+						>
+							<Button type="submit" className="w-full">
+								<Image
+									src={iconLookup[provider.name] as string}
+									alt={provider.name}
+									width={18}
+									height={18}	
+								/>
+								<span>Sign in with {provider.name}</span>
+							</Button>
+						</form>
+				))}
 				</CardFooter>
 			</Card>
 		</div>
