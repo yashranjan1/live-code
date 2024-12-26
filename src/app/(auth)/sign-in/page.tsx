@@ -7,11 +7,13 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import Image from "next/image";
-import { auth, signIn } from "@/server/auth";
+import { signIn } from "@/server/auth";
 import { providerMap } from "@/server/auth/config";
 import { AuthError } from "next-auth";
 import { redirect } from "next/navigation";
 import { iconLookup } from "@/lib/icon-lookup";
+import SignInForm from "@/components/SignInForm";
+import { Separator } from "@/components/ui/separator";
 
 interface SignInFormProps {
   searchParams: { 
@@ -19,6 +21,8 @@ interface SignInFormProps {
    }
 }
 
+// https://github.com/HuXn-WebDev/Auth.js-v5-Complete-Course/blob/main/app/login/page.tsx 
+// look into how you can make server actions work with next-auth
 
 export default async function Page(props: SignInFormProps) {
 
@@ -30,12 +34,19 @@ export default async function Page(props: SignInFormProps) {
 				<CardHeader>
 					<CardTitle className="text-center text-2xl">Sign In</CardTitle>
 				</CardHeader>
-				<CardContent></CardContent>
+				<CardContent className="flex flex-col gap-2">
+                    <SignInForm/>
+                    <span className="text-center text-sm">
+                        Don't have an account? <a href="/sign-up" className="text-blue-500">Sign up</a>
+                    </span>
+                    <Separator />
+                </CardContent>
 				<CardFooter>
 					{ 
                     Object.values(providerMap).map((provider) => (
 						<form
                             key={provider.id}
+                            className="w-full"
 							action={async () => {
 								"use server"
 								try {

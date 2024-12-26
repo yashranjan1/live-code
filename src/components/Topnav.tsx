@@ -38,7 +38,7 @@ export default function Topnav() {
                             <DropdownMenuTrigger asChild>
                                 <Avatar>
                                     <AvatarImage src={session.user.image as string} />
-                                    <AvatarFallback>{(session.user.name as string).charAt(0) }</AvatarFallback>
+                                    <AvatarFallback>{(session.user.name as string).charAt(0).toUpperCase() }</AvatarFallback>
                                 </Avatar>
                             </DropdownMenuTrigger>
                         <DropdownMenuContent className="min-w-fit" align="end">
@@ -59,12 +59,12 @@ export default function Topnav() {
                                 </DropdownMenuSub>
                             </DropdownMenuGroup>
                             <DropdownMenuSeparator />
-                            <DropdownMenuItem onClick={signOut}>
+                            <DropdownMenuItem onClick={() => signOut()}>
                                 <span>Log out</span>
                             </DropdownMenuItem>
                         </DropdownMenuContent>
                     </DropdownMenu>
-                )
+                )   
             }
             {
                 !session?.user && (
