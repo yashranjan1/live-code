@@ -1,11 +1,9 @@
 import { PrismaAdapter } from "@auth/prisma-adapter";
 import { CredentialsSignin, User, type DefaultSession, type NextAuthConfig } from "next-auth";
 import Discord from "next-auth/providers/discord";
-import Credentials from "next-auth/providers/credentials";
+import GitHub from "next-auth/providers/github";
 import type { Provider } from "next-auth/providers"
 import { db } from "@/server/db";
-import { api } from "@/trpc/server";
-import bcrypt from "bcryptjs";
 
 class InvalidCredentials extends CredentialsSignin {
     code = "INVALID_CREDENTIALS";
@@ -34,6 +32,7 @@ declare module "next-auth" {
 }
 
 const providers: Provider[] = [
+    GitHub,
     Discord,
 ];
 

@@ -2,25 +2,21 @@ import { Button } from "@/components/ui/button";
 import {
   Card,
   CardContent,
-  CardFooter,
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import Image from "next/image";
 import { signIn } from "@/server/auth";
 import { providerMap } from "@/server/auth/config";
 import { AuthError } from "next-auth";
 import { redirect } from "next/navigation";
 import { iconLookup } from "@/lib/icon-lookup";
+import AltImage from "@/app/_components/image";
 
 interface SignInFormProps {
   searchParams: { 
 	callbackUrl: string
    }
 }
-
-// https://github.com/HuXn-WebDev/Auth.js-v5-Complete-Course/blob/main/app/login/page.tsx 
-// look into how you can make server actions work with next-auth
 
 export default async function Page(props: SignInFormProps) {
 
@@ -53,11 +49,10 @@ export default async function Page(props: SignInFormProps) {
 							}}
 						>
 							<Button type="submit" className="w-full">
-								<Image
-									src={iconLookup[provider.name] as string}
-									alt={provider.name}
-									width={18}
-									height={18}	
+								<AltImage
+									defaultSrc={iconLookup[provider.name]!.dark}
+									alternateSrc={iconLookup[provider.name]!.light}
+									alt={`${provider.name}-icon`}
 								/>
 								<span>Sign in with {provider.name}</span>
 							</Button>
