@@ -22,7 +22,8 @@ const { auth: uncachedAuth, handlers, signIn, signOut } = NextAuth({
             }
         }
     },
-    session: authConfig.session
+    session: authConfig.session,
+    pages: authConfig.pages
 });
 
 const auth = cache(uncachedAuth);
