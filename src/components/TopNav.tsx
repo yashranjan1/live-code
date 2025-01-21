@@ -17,9 +17,11 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
 import { useTheme } from "next-themes";
+import { useRouter } from "next/navigation";
 
 export default function TopNav() {
 
+    const router = useRouter()
     const { data: session } = useSession()
     const { theme, setTheme } = useTheme()
     
@@ -33,12 +35,15 @@ export default function TopNav() {
                     session && session.user && (
                         <DropdownMenu>
                             <DropdownMenuTrigger asChild>
-                            <Avatar>
-                                <AvatarImage src={session.user.image ?? ""} />
-                                <AvatarFallback className="sr-only">{session.user.name}</AvatarFallback>
-                            </Avatar>
+                                <Avatar>
+                                    <AvatarImage src={session.user.image ?? ""} />
+                                    <AvatarFallback className="sr-only">{session.user.name}</AvatarFallback>
+                                </Avatar>
                             </DropdownMenuTrigger>
                             <DropdownMenuContent align="end">
+                                <DropdownMenuItem onClick={() => router.push("/dashboard")}>
+                                    Dashboard
+                                </DropdownMenuItem>
                                 <DropdownMenuSub>
                                     <DropdownMenuSubTrigger>Theme</DropdownMenuSubTrigger>
                                     <DropdownMenuPortal>

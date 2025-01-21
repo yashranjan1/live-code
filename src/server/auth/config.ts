@@ -3,6 +3,7 @@ import { type DefaultSession, type NextAuthConfig } from "next-auth";
 import { db } from "@/server/db";
 import GitHub from "next-auth/providers/github";
 import Discord from "next-auth/providers/discord";
+import { User } from "@/types";
 
 /**
  * Module augmentation for `next-auth` types. Allows us to add custom properties to the `session`
@@ -14,6 +15,7 @@ declare module "next-auth" {
   interface Session extends DefaultSession {
     user: {
       // role: UserRole;
+      info: User;
     } & DefaultSession["user"];
   }
 
