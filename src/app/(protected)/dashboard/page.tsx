@@ -1,21 +1,38 @@
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Plus, PlusCircle } from "lucide-react";
-import Link from "next/link";
+"use client"
+
+import RoomCard from "@/app/_components/rooms";
+import { getUserRooms } from "@/server/actions/room/get";
+import { RoomData } from "@liveblocks/node";
+import { useEffect, useState } from "react";
+import { toast } from "sonner";
 
 export default function Dashboard() {
+    
+    const [rooms, setRooms] = useState<RoomData[]>([]);
+    const [isFetching, setIsFetching] = useState<boolean>(false);
+
+    useEffect(() => {
+        const getRooms = async() => {
+            setIsFetching(true);
+            try {
+                const rooms = await getUserRooms();
+                setRooms(rooms.data);
+            }
+            catch (error) {
+                toast.error("Failed to fetch rooms", {
+                    description: "An error occured while fetching your rooms, please try again later",
+                });
+            }
+            finally {
+                setIsFetching(false);
+            }
+        };
+        getRooms();
+    }, []);
+
     return (
         <div className="flex flex-col gap-4 p-4 h-full w-full">
-            <Card className="w-72">
-                <CardHeader className="flex flex-row items-center">
-                    <CardTitle className="flex-1">Rooms</CardTitle>
-                    <Link href="/live/create">
-                        <PlusCircle className="h-6 w-6" />
-                    </Link>
-                </CardHeader>
-                <CardContent>
-                    
-                </CardContent>
-            </Card>
+            <RoomCard rooms={rooms} isFetching={isFetching} />
         </div>
     );
 }

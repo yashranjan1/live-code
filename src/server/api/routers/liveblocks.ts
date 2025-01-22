@@ -45,7 +45,7 @@ export const liveBlocksRouter = createTRPCRouter({
 			const session = await auth();
 
 			if (!session) {
-				return new Response("Unauthorized", { status: 401 });
+				throw new Error("Unauthorized");
 			}
 
 			const { id } = session.user.info; 
@@ -54,11 +54,34 @@ export const liveBlocksRouter = createTRPCRouter({
 
 			access[id] = [RoomAccessTypes.WRITE];
 
-			const response = await liveblocks.createRoom(input.name, {
-				defaultAccesses: [],
-				usersAccesses: access
-			});
+			try {
+				const response = await liveblocks.createRoom(input.name, {
+					defaultAccesses: [],
+					usersAccesses: access
+				});
 
-			return response;
+				return response;
+			} catch (error) {
+				throw new Error("Failed to create room");
+			}
+		}),
+	getRooms: protectedProcedure
+		.query(async ({ input }) => {
+			const session = await auth();
+
+			if (!session) {
+				throw new Error("Unauthorized");
+			}
+
+			const { id } = session.user; 
+
+			try {
+				const response = await liveblocks.getRooms({
+					userId: id
+				});
+				return response;
+			} catch (error) {
+				throw new Error("Failed to get rooms");
+			}
 		}),
 });

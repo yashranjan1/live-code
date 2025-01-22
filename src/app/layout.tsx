@@ -1,5 +1,6 @@
 import { ThemeProvider } from "@/components/theme-provider";
 import "@/styles/globals.css";
+import { Toaster } from "@/components/ui/sonner"
 
 import { GeistSans } from "geist/font/sans";
 import { type Metadata } from "next";
@@ -32,6 +33,7 @@ export default function RootLayout({
                 <main className="flex flex-col justify-center items-center">
                   {children}
                 </main>
+                <Toaster />
               </div>
             </TRPCReactProvider>
           </SessionProvider>

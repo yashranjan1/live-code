@@ -25,7 +25,11 @@ export default function CreateRoom() {
     });
 
     const onSubmit = async(data: z.infer<typeof CreateRoomSchema>) => {
-        console.log(await createRoom(data.name))
+        try {
+            await createRoom(data.name);
+        } catch (error) {
+            console.log(error);
+        }
     };
 
     return (
