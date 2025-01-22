@@ -1,6 +1,6 @@
 "use client"
 
-import RoomCard from "@/app/_components/rooms";
+import RoomCard from "@/app/_components/RoomCard";
 import { getUserRooms } from "@/server/actions/room/get";
 import { RoomData } from "@liveblocks/node";
 import { useEffect, useState } from "react";

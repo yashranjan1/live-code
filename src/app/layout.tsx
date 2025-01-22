@@ -28,7 +28,7 @@ export default function RootLayout({
         >
           <SessionProvider>
             <TRPCReactProvider>
-              <div className="grid grid-rows-[auto_1fr] min-h-screen mx-48 my-5 lg:mx-64">
+              <div className="grid grid-rows-[auto_1fr] min-h-screen mx-48 py-8 lg:mx-64 max-h-screen gap-10">
                 <TopNav />
                 <main className="flex flex-col justify-center items-center">
                   {children}
