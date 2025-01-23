@@ -9,7 +9,7 @@ const themeColors = {
         gutter: "#313131",
     },
     light: {
-        background: "#ffffff",
+        background: "#dddddd",
         foreground: "#4d4d4c",
         caret: "#222222",
         selection: "#d6d6d6",
@@ -20,20 +20,24 @@ const themeColors = {
 const darkMode = EditorView.theme({
     "&": {
         color: themeColors.dark.foreground,
-        backgroundColor: themeColors.dark.background
+        backgroundColor: themeColors.dark.background,
     },
     ".cm-content": {
-        caretColor: themeColors.dark.caret
+        caretColor: themeColors.dark.caret,
     },
     "&.cm-focused .cm-cursor": {
         borderLeftColor: themeColors.dark.foreground
     },
     "&.cm-focused .cm-selectionBackground, ::selection": {
-        backgroundColor: themeColors.dark.selection
+        backgroundColor: themeColors.dark.background
+    },
+    ".cm-activeLineGutter": {
+        backgroundColor: themeColors.dark.selection,
     },
     ".cm-gutters": {
         backgroundColor: themeColors.dark.gutter,
         color: themeColors.dark.foreground,
+        borderRight: "0"
     }
 })
 
@@ -49,6 +53,9 @@ const lightMode = EditorView.theme({
         borderLeftColor: themeColors.light.foreground
     },
     "&.cm-focused .cm-selectionBackground, ::selection": {
+        backgroundColor: themeColors.light.selection,
+    },
+    ".cm-activeLineGutter": {
         backgroundColor: themeColors.light.selection,
     },
     ".cm-gutters": {

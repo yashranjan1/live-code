@@ -38,6 +38,7 @@ export const liveBlocksRouter = createTRPCRouter({
 		.input(
 			z.object({
 				name: z.string(),
+				members: z.array(z.string()),
 			}),
 		)
 		.mutation(async ({ input }) => {

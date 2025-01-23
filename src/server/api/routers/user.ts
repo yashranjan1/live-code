@@ -18,4 +18,19 @@ export const userRouter = createTRPCRouter({
                 },
             });
         }),
+    /**
+     * Returns a list of users that exclude the current logged in user
+     * 
+     * @returns User[]
+     */
+    getUserList: protectedProcedure
+        .query(async ({ ctx }) => {  
+            return await ctx.db.user.findMany({
+                where: {
+                    id: {
+                        not: ctx.session.user.id,
+                    },
+                },
+            });
+        }),
 });

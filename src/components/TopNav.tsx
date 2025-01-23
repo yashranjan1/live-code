@@ -27,9 +27,9 @@ export default function TopNav() {
     
     return (
         <div className="flex items-center justify-between">
-            <div className="flex items-center gap-2 flex-1">
+            <Link href="/" className="flex items-center gap-2 flex-1">
                 <span className="text-4xl font-bold">/lc</span>
-            </div>
+            </Link>
             <div className="flex items-center gap-2">
                 {
                     session && session.user && (

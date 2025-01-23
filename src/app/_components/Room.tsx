@@ -19,7 +19,11 @@ export function Room({ children, roomId }: RoomParams) {
                 cursor: null,
             }}
         >
-            <ClientSideSuspense fallback={<Loader2 className="h-6 w-6 animate-spin" />}>
+            <ClientSideSuspense fallback={
+                <div className="flex h-full w-full items-center justify-center">
+                    <Loader2 className="h-6 w-6 animate-spin mb-10" />
+                </div>
+            }>
                 {children}
             </ClientSideSuspense>
         </RoomProvider>

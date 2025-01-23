@@ -10,12 +10,15 @@ import { LiveblocksYjsProvider } from "@liveblocks/yjs";
 import { useRoom, useSelf } from "@liveblocks/react/suspense";
 import { useTheme } from "next-themes";
 import { darkMode, lightMode, themeColors } from "data/editor-themes";
+import { Toolbar } from "./Toolbar";
 
 // Collaborative code editor with undo/redo, live cursors, and live avatars
 export function CodeEditor() {
 	const room = useRoom();
 	const [element, setElement] = useState<HTMLElement>();
 	const [yUndoManager, setYUndoManager] = useState<Y.UndoManager>();
+	const [foreground, setForeground] = useState<string>();
+	const [background, setBackground] = useState<string>();
 
 	const { theme } = useTheme();
 
@@ -26,7 +29,6 @@ export function CodeEditor() {
 		if (!node) return;
 		setElement(node);
 	}, []);
-
 
 
 	// Set up Liveblocks Yjs provider and attach CodeMirror editor
@@ -70,6 +72,9 @@ export function CodeEditor() {
 			parent: element,
 		});
 
+		setForeground(theme === "dark" ? themeColors.dark.foreground : themeColors.light.foreground);
+		setBackground(theme === "dark" ? themeColors.dark.background : themeColors.light.background);
+
 		return () => {
 			ydoc?.destroy();
 			provider?.destroy();
@@ -78,12 +83,20 @@ export function CodeEditor() {
 	}, [element, room, userInfo, theme]);
 
 	return (
-		<div className={`flex flex-col relative rounded-lg dark:bg-[#1e1e1e] bg-white p-4 h-full w-full`}>
+		<div 
+			className={`flex flex-col relative rounded-lg p-4 h-full w-full gap-3`}
+			style={{
+				backgroundColor: background,
+				color: foreground,
+			}}
+		>
 			<div className={"flex flex-row items-center justify-between"}>
-				<div>
-				{/* {yUndoManager ? <Toolbar yUndoManager={yUndoManager} /> : null} */}
+				<div className={"flex-1"}>
+
 				</div>
-				{/* <Avatars /> */}
+				<div>
+					{yUndoManager ? <Toolbar yUndoManager={yUndoManager} /> : null}
+				</div>
 			</div>
 			<div className={"relative flex-1"} ref={ref}></div>
 		</div>
