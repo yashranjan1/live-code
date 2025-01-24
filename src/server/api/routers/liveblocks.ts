@@ -55,6 +55,10 @@ export const liveBlocksRouter = createTRPCRouter({
 
 			access[id] = [RoomAccessTypes.WRITE];
 
+			input.members.map((member) => {
+				access[member] = [RoomAccessTypes.WRITE];
+			});
+
 			try {
 				const response = await liveblocks.createRoom(input.name, {
 					defaultAccesses: [],
@@ -67,7 +71,7 @@ export const liveBlocksRouter = createTRPCRouter({
 			}
 		}),
 	getRooms: protectedProcedure
-		.query(async ({ input }) => {
+		.query(async () => {
 			const session = await auth();
 
 			if (!session) {
@@ -83,6 +87,36 @@ export const liveBlocksRouter = createTRPCRouter({
 				return response;
 			} catch (error) {
 				throw new Error("Failed to get rooms");
+			}
+		}),
+	deleteRoom: protectedProcedure
+		.input(
+			z.object({
+				roomId: z.string(),
+			}),
+		)
+		.mutation(async ({ input }) => {
+			const session = await auth();
+
+			if (!session) {
+				throw new Error("Unauthorized");
+			}
+
+			const { id } = session.user.info; 
+			
+			const rooms = await liveblocks.getRooms({
+				userId: id
+			});
+
+			if (!rooms.data.find((room) => room.id === input.roomId)) {
+				throw new Error("Room not found");
+			}
+
+			try {
+				const response = await liveblocks.deleteRoom(input.roomId);
+				return response;
+			} catch (error) {
+				throw new Error("Failed to delete room");
 			}
 		}),
 });

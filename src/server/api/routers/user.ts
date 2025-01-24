@@ -7,6 +7,12 @@ import {
 } from "@/server/api/trpc";
 
 export const userRouter = createTRPCRouter({
+    /**
+     * Returns a user by id
+     * 
+     * @param id - The id of the user
+     * @returns User
+     */
     getUser: publicProcedure
         .input(z.object({
             id: z.string(),

@@ -18,21 +18,32 @@ import {
     SelectValue,
 } from "@/components/ui/select"
 import { Input } from "@/components/ui/input";
-import { set, z } from "zod";
+import { z } from "zod";
 import { Button } from "@/components/ui/button";
 import { createRoom } from "@/server/actions/room";
 import { getUserList } from "@/server/actions/user";
-import { useMutation, useQuery } from "@tanstack/react-query";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { Loader2, MinusCircle, PlusCircle } from "lucide-react";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { useEffect, useState } from "react";
+import { useRouter } from "next/navigation";
+import { toast } from "sonner";
 
 export default function CreateRoom() {
+
+    const router = useRouter();
+    const queryClient = useQueryClient();
 
     const { data: users, isLoading, error} = useQuery({
         queryKey: ["users"],
         queryFn: getUserList,
     });
+    
+    if (error) {
+        toast.error("Failed to fetch users", {
+            description: "An error occured while fetching your users, please try again later",
+        });
+    }
 
     const [memberList, setMemberList] = useState<string[]>([]);
 
@@ -51,16 +62,24 @@ export default function CreateRoom() {
     }, [memberList]);
 
     const onSubmit = async(data: z.infer<typeof CreateRoomSchema>) => {
-        mutation.mutate(data);
+        mutate(data)
     };
 
-    const mutation = useMutation({
-        mutationFn: createRoom,
+    const { isPending, mutate } = useMutation({
+        mutationFn: (data: z.infer<typeof CreateRoomSchema>) => createRoom(data.name, data.members),
         onSuccess: (data) => {
-            console.log(data);
+           router.push("/dashboard") 
+           queryClient.invalidateQueries({
+               queryKey: ["rooms"],
+           });
+           toast.success("Room created", {
+               description: "Your room has been created successfully",
+           });
         },
         onError: (error) => {
-            console.log(error);
+            toast.error("Failed to create room", {
+                description: "An error occured while creating your room, please try again later",
+            });
         }
     });
 
@@ -143,8 +162,16 @@ export default function CreateRoom() {
                         <Button 
                             type="submit" 
                             className="w-full h-9"
+                            disabled={isPending}
                         >
-                            Create
+                            {
+                                isPending &&
+                                <Loader2 className="w-6 h-6 animate-spin" />
+                            }
+                            {
+                                !isPending &&
+                                <PlusCircle className="w-6 h-6" />
+                            }
                         </Button>
                     </form>
                 </Form>
