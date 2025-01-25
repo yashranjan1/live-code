@@ -67,11 +67,11 @@ export default function RoomCard({
                                                     <Link href={`/live/${room.id}`} className="cursor-pointer">
                                                         <DropdownMenuItem>
                                                             <Button variant="link" className="p-0 h-full w-full hover:no-underline justify-start font-normal">
-                                                                View
+                                                                Join
                                                             </Button>
                                                         </DropdownMenuItem>
                                                     </Link>
-                                                    <Link href={`/live/${room.id}/edit`} className="cursor-pointer">
+                                                    <Link href={`/live/edit/${room.id}`} className="cursor-pointer">
                                                         <DropdownMenuItem>
                                                             <Button variant="link" className="p-0 h-full w-full hover:no-underline justify-start font-normal">
                                                                 Manage 

@@ -89,6 +89,20 @@ export const liveBlocksRouter = createTRPCRouter({
 				throw new Error("Failed to get rooms");
 			}
 		}),
+	getRoom: publicProcedure
+		.input(
+			z.object({
+				roomId: z.string(),
+			}),
+		)
+		.query(async ({ input }) => {
+			try {
+				const response = await liveblocks.getRoom(input.roomId);
+				return response;
+			} catch (error) {
+				throw new Error("Failed to get room");
+			}
+		}),
 	deleteRoom: protectedProcedure
 		.input(
 			z.object({
