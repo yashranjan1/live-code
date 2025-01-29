@@ -13,10 +13,10 @@ export const getUserRooms = async () => {
 
 export const getRoomById = async (roomId: string) => {
     try {
-        const room = await api.liveblocks.getRoom({
+        const roomData = await api.liveblocks.getRoomData({
             roomId: roomId
         });
-        return room;
+        return roomData;
     } catch (error) {
         throw new Error("Failed to get room");
     }
