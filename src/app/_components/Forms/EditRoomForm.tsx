@@ -45,6 +45,7 @@ export default function EditRoomForm(){
         queryFn: async () => {
             const roomData = await getRoomById(roomId)
             if (roomData instanceof Error) return roomData
+            setValue("name", roomData.room.id)
             setMembers(roomData.users) 
             return roomData;
         },
@@ -75,6 +76,7 @@ export default function EditRoomForm(){
     
     
     const onSubmit = async (data: z.infer<typeof CreateRoomSchema>) => {
+        console.log(data.name, data.members)
         mutate({
             roomId: data.name,
             members: data.members
@@ -86,7 +88,7 @@ export default function EditRoomForm(){
             <form className="flex flex-col gap-4 w-full" onSubmit={form.handleSubmit(onSubmit)}>
                 <FormLabel>Members</FormLabel>
 				<Select onValueChange={(value) => {
-                    const newMember = roomData?.users.filter(user => 
+                    const newMember = users?.filter(user => 
                         user.id === value && !members.some(member => member.id === user.id)
                     ) || []; 
                     setMembers(prevMembers => [...prevMembers, ...newMember])

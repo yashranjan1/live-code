@@ -53,7 +53,7 @@ export default function RoomCard({
                     <ScrollArea className="h-full">
                         {
                             rooms.map((room) => (
-                                <div key={room.id} className="py-3 flex flex-col gap-3">
+                                <div key={room.id} className="pt-3 flex flex-col gap-3">
                                     <div className="flex flex-row items-center gap-4 px-1">
                                         <Link className={isPending ? "pointer-events-none flex-1" : "flex-1"} href={`/live/${room.id}`}>
                                             <div>{room.id}</div>
