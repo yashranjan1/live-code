@@ -1,6 +1,8 @@
 
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { updateRoom } from "@/server/actions/room";
+import { redirect } from "next/navigation";
+import { toast } from "sonner";
 
 
 export const useEditRoom = () => {
@@ -13,6 +15,8 @@ export const useEditRoom = () => {
             queryClient.invalidateQueries({
                 queryKey: ["rooms"],
             });
+            toast.success("Room successfully updated")
+            redirect("/")
         },
     });
 };

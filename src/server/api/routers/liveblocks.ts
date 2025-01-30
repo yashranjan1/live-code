@@ -194,8 +194,6 @@ export const liveBlocksRouter = createTRPCRouter({
 				usersAccesses[member] = [RoomAccessTypes.WRITE];
 			});
 			
-			console.log(input.roomId)
-
 			try {
 				const response = await liveblocks.updateRoom(input.roomId, {
 					usersAccesses: usersAccesses,

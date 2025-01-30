@@ -30,7 +30,7 @@ export default function EditRoomForm(){
     });
     
     const router = useRouter()
-    const { mutate } = useEditRoom();
+    const { mutate, isPending } = useEditRoom();
 
     const { roomId } = useParams<{ roomId: string }>();
     const [members, setMembers] = useState<User[]>([])
@@ -46,7 +46,7 @@ export default function EditRoomForm(){
             const roomData = await getRoomById(roomId)
             if (roomData instanceof Error) return roomData
             setValue("name", roomData.room.id)
-            setMembers(roomData.users) 
+            setMembers(roomData.users)
             return roomData;
         },
         queryKey: ["get_rooms"],
@@ -76,7 +76,6 @@ export default function EditRoomForm(){
     
     
     const onSubmit = async (data: z.infer<typeof CreateRoomSchema>) => {
-        console.log(data.name, data.members)
         mutate({
             roomId: data.name,
             members: data.members
@@ -114,7 +113,14 @@ export default function EditRoomForm(){
 					</SelectContent>
 				</Select>
                <UserAvatarList setMembers={setMembers} members={members} /> 
-               <Button className="w-full h-9 mt-3">Save</Button>
+               <Button className="w-full h-9 mt-3" disabled={isPending}>
+                    {
+                        isPending ?
+                        <Loader2 className="w-6 h-6 animate-spin" /> :
+                        <h1>Save</h1>
+                    }
+               </Button>
+
             </form>
         </Form>
     )
